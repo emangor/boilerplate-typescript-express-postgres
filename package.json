@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "xxx"
+    "url": "https://github.com/emangor/boilerplate-typescript-express-postgres.git"
   },
   "license": "MIT",
   "scripts": {
