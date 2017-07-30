@@ -41,5 +41,4 @@ if (cluster.isMaster) {
     app.listen(config.port, function () {
         logger.info(`worker started: ${cluster.worker.id} | server listening on port: ${config.port}`);
     });
-    
 }
