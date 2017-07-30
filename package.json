@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "author": "Erik Mangor",
   "dependencies": {
+    "async": "^2.3.0",
     "body-parser": "^1.17.2",
     "dotenv": "^4.0.0",
     "env-var": "^2.4.3",
@@ -12,6 +13,7 @@
     "winston": "^2.3.1"
   },
   "devDependencies": {
+    "@types/async": "^2.0.40",
     "@types/body-parser": "^1.16.4",
     "@types/dotenv": "^4.0.0",
     "@types/express": "^4.0.36",
