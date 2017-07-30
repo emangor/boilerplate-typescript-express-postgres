@@ -123,8 +123,6 @@ export const sqlExecMultipleRows = (client, sql, data, callback) => {
         logger.error(`sqlExecMultipleRows(): No data available`)
         callback('No data available');
     }
-
-
 }
 
 /*
@@ -137,7 +135,6 @@ export const rollback = (client, done) => {
     } else {
         logger.warn(`rollback() not excuted. client is not set`);
     }
-
 }
 
 /*
