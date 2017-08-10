@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 const pkg = require('./../../package.json');
 
-export let healthcheck = (req: Request, res: Response) => {
+export const healthcheck = (req: Request, res: Response) => {
     res.json({
         status: 'ok',
         uptime: process.uptime(),

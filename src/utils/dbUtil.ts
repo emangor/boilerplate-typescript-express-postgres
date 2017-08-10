@@ -29,7 +29,7 @@ pool.on('error', function (err:Error, client:pg.Client) {
  */
 export const sqlToDB = (sql:string, data:string[][], callback:Function) => {
     logger.debug(`sqlToDB() sql: ${sql} | data: ${data}`);
-    pool.query(sql, data, function(err: Error, result:pg.QueryResult) {
+    pool.query(sql, data, (err: Error, result:pg.QueryResult) => {
         if (err) {
             logger.error(`sqlToDB() pool.query error: ${err}`);
             callback(err);
@@ -46,13 +46,13 @@ export const sqlToDB = (sql:string, data:string[][], callback:Function) => {
  */
 export const getTransaction = (callback:Function) => {
     logger.debug(`getTransaction()`);
-    pool.connect(function(err:Error, client:pg.Client, done:any) {
+    pool.connect((err:Error, client:pg.Client, done:any) => {
         logger.debug(`getTransaction() | pool.connect()`);
         if (err) {
             logger.error(`getTransaction() failed: ${err}`);
             callback(err);
         } else {
-            client.query('BEGIN', function(err) {
+            client.query('BEGIN', (err) => {
                 if (err) {
                     done();
                     callback(err);
@@ -73,7 +73,7 @@ export const getTransaction = (callback:Function) => {
 export const sqlExecSingleRow = (client:pg.Client, sql:string, data:string[][], callback:Function) => {
     logger.debug(`sqlExecSingleRow() sql: ${sql} | data: ${data}`);
 
-    client.query(sql, data, function(err, result) {
+    client.query(sql, data, (err, result) => {
         if (err) {
             logger.debug(`sqlExecSingleRow() error: ${err} | sql: ${sql} | data: ${data}`);
             callback(err);
@@ -96,11 +96,11 @@ export const sqlExecMultipleRows = (client:pg.Client, sql:string, data:string[][
     //connect to Postgres
     if (data.length !== 0) {
         //use asyncSeries so each item in loop needs callback to progress
-        async.eachSeries(data, function(item, itemCallback) {            
+        async.eachSeries(data, (item, itemCallback) => {
             logger.debug(`sqlExecMultipleRows() eachSeries data: ${data}`);
             logger.debug(`sqlExecMultipleRows() eachSeries item: ${item}`);
             //try to insert/update/delete record
-            client.query(sql, item, function(err:Error, result:pg.QueryResult) {
+            client.query(sql, item, (err:Error, result:pg.QueryResult) => {
                 logger.debug(`sqlExecMultipleRows() client.query() sql: ${sql} | item: ${item}`);
                 //if no error - continue
                 if (err) {
@@ -141,8 +141,6 @@ export const rollback = (client:pg.Client, done:any) => {
  * Commit transaction
  */
 export const commit = (client:pg.Client, done:any) => {
-    console.log(typeof done);
-    console.log(done);
     logger.debug(`sql transaction committed`);
     client.query('COMMIT', done);
 }
