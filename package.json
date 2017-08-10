@@ -1,13 +1,12 @@
 {
   "name": "boilerplate-nodejs-typescript-express-postgres",
   "description": "example of node typescript express postgres project",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Erik Mangor",
   "dependencies": {
     "async": "^2.3.0",
     "body-parser": "^1.17.2",
     "dotenv": "^4.0.0",
-    "env-var": "^2.4.3",
     "express": "^4.15.3",
     "pg": "^6.4.0",
     "winston": "^2.3.1"

@@ -17,7 +17,7 @@ const pool = new pg.Pool(pgconfig);
 
 logger.info(`DB Connection Settings: ${JSON.stringify(pgconfig)}`);
 
-pool.on('error', function (err, client) {
+pool.on('error', function (err:Error, client:pg.Client) {
     logger.error(`idle client error, ${err.message} | ${err.stack}`);
 });
 
@@ -27,9 +27,9 @@ pool.on('error', function (err, client) {
  * @param data: the data to be stored
  * @return result
  */
-export const sqlToDB = (sql, data, callback) => {
+export const sqlToDB = (sql:string, data:string[][], callback:Function) => {
     logger.debug(`sqlToDB() sql: ${sql} | data: ${data}`);
-    pool.query(sql, data, function(err, result) {
+    pool.query(sql, data, function(err: Error, result:pg.QueryResult) {
         if (err) {
             logger.error(`sqlToDB() pool.query error: ${err}`);
             callback(err);
@@ -44,9 +44,9 @@ export const sqlToDB = (sql, data, callback) => {
  * Retrieve a SQL client with transaction from connection pool. If the client is valid, either
  * COMMMIT or ROALLBACK needs to be called at the end before releasing the connection back to pool.
  */
-export const getTransaction = (callback) => {
+export const getTransaction = (callback:Function) => {
     logger.debug(`getTransaction()`);
-    pool.connect(function(err, client, done) {
+    pool.connect(function(err:Error, client:pg.Client, done:any) {
         logger.debug(`getTransaction() | pool.connect()`);
         if (err) {
             logger.error(`getTransaction() failed: ${err}`);
@@ -70,7 +70,7 @@ export const getTransaction = (callback) => {
  * @param data: the data to be stored
  * @return result
  */
-export const sqlExecSingleRow = (client, sql, data, callback) => {
+export const sqlExecSingleRow = (client:pg.Client, sql:string, data:string[][], callback:Function) => {
     logger.debug(`sqlExecSingleRow() sql: ${sql} | data: ${data}`);
 
     client.query(sql, data, function(err, result) {
@@ -90,7 +90,7 @@ export const sqlExecSingleRow = (client, sql, data, callback) => {
  * @param data: the data to be stored
  * @return result
  */
-export const sqlExecMultipleRows = (client, sql, data, callback) => {
+export const sqlExecMultipleRows = (client:pg.Client, sql:string, data:string[][], callback:Function) => {
     logger.debug(`inside sqlExecMultipleRows()`);
     var recordCount = 0;
     //connect to Postgres
@@ -100,7 +100,7 @@ export const sqlExecMultipleRows = (client, sql, data, callback) => {
             logger.debug(`sqlExecMultipleRows() eachSeries data: ${data}`);
             logger.debug(`sqlExecMultipleRows() eachSeries item: ${item}`);
             //try to insert/update/delete record
-            client.query(sql, item, function(err, result) {
+            client.query(sql, item, function(err:Error, result:pg.QueryResult) {
                 logger.debug(`sqlExecMultipleRows() client.query() sql: ${sql} | item: ${item}`);
                 //if no error - continue
                 if (err) {
@@ -128,7 +128,7 @@ export const sqlExecMultipleRows = (client, sql, data, callback) => {
 /*
  * Rollback transaction
  */
-export const rollback = (client, done) => {
+export const rollback = (client:pg.Client, done:any) => {
     if (typeof client !== 'undefined' && client) {
         logger.info(`sql transaction rollback`);
         client.query('ROLLBACK', done);
@@ -140,7 +140,9 @@ export const rollback = (client, done) => {
 /*
  * Commit transaction
  */
-export const commit = (client, done) => {
+export const commit = (client:pg.Client, done:any) => {
+    console.log(typeof done);
+    console.log(done);
     logger.debug(`sql transaction committed`);
     client.query('COMMIT', done);
 }
