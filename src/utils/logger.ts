@@ -1,19 +1,21 @@
 const config = require('../config');
-const winston = require('winston');
-
-//timestamp for logger
-const tsFormat = () => (new Date()).toLocaleTimeString();
-const logger = new(winston.Logger)({
-    transports: [
-        // add colors and timestamp
-        new(winston.transports.Console)({
-            timestamp: tsFormat,
-            colorize: true,
-        })
-    ]
+const { createLogger, format, transports } = require('winston');
+const { combine, timestamp, printf } = format;
+ 
+const loggerFormat = printf((info : any) => {
+    return `${info.timestamp} | ${info.level}: ${info.message}`;
 });
-logger.cli();
-// logger level is set in the config
-logger.level = config.loggerLevel;
+ 
+const logger = createLogger({
+    level: config.loggerLevel,
+    format: combine(
+        format.colorize(),
+        timestamp(),
+        loggerFormat
+    ),
+    transports: [
+        new transports.Console()
+    ]
+    });
 
 export = logger;
