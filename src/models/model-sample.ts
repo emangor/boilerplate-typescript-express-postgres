@@ -29,7 +29,6 @@ export const sampleTransactionModel = async (): Promise<string> => {
     const singleData: string[][] = [];
     const multiData: string[][] = [['typescript'], ['is'], ['fun']];
     const client: PoolClient = await dbUtil.getTransaction();
-    //const client = await pool.connect()
     try {
         await dbUtil.sqlExecSingleRow(client, singleSql, singleData);
         await dbUtil.sqlExecMultipleRows(client, multiSql, multiData);
