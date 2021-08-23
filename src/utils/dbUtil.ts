@@ -1,6 +1,6 @@
-import { Client, Pool, QueryResult } from 'pg';
-import config = require('./../config');
-import logger = require('./../utils/logger');
+import { Pool, PoolClient, QueryResult } from 'pg';
+import { config } from './../config';
+import { logger } from './../utils./../utils/logger';
 
 const pgconfig = {
     user: config.db.user,
@@ -9,67 +9,78 @@ const pgconfig = {
     host: config.db.host,
     port: config.db.port,
     max: config.db.max,
-    idleTimeoutMillis: config.db.idleTimeoutMillis
-}
+    idleTimeoutMillis: config.db.idleTimeoutMillis,
+};
 
 const pool = new Pool(pgconfig);
 
 logger.info(`DB Connection Settings: ${JSON.stringify(pgconfig)}`);
 
-pool.on('error', function (err:Error) {
+pool.on('error', function (err: Error) {
     logger.error(`idle client error, ${err.message} | ${err.stack}`);
 });
 
-/* 
+/*
  * Single Query to Postgres
  * @param sql: the query for store data
  * @param data: the data to be stored
  * @return result
  */
-export const sqlToDB = async (sql:string, data:string[][]) => {
+export const sqlToDB = async (
+    sql: string,
+    data: string[][]
+): Promise<QueryResult> => {
     logger.debug(`sqlToDB() sql: ${sql} | data: ${data}`);
-    let result : QueryResult;
+    let result: QueryResult;
     try {
         result = await pool.query(sql, data);
         return result;
     } catch (error) {
         throw new Error(error.message);
     }
-}
+};
 
 /*
  * Retrieve a SQL client with transaction from connection pool. If the client is valid, either
  * COMMMIT or ROALLBACK needs to be called at the end before releasing the connection back to pool.
  */
-export const getTransaction = async () => {
+export const getTransaction = async (): Promise<PoolClient> => {
     logger.debug(`getTransaction()`);
-    const client : Client = await pool.connect();
+    const client = await pool.connect();
     try {
         await client.query('BEGIN');
         return client;
     } catch (error) {
         throw new Error(error.message);
     }
-}
+};
 
-/* 
+/*
  * Execute a sql statment with a single row of data
  * @param sql: the query for store data
  * @param data: the data to be stored
  * @return result
  */
-export const sqlExecSingleRow = async (client:Client, sql:string, data:string[][]) => {
+export const sqlExecSingleRow = async (
+    client: PoolClient,
+    sql: string,
+    data: string[][]
+): Promise<QueryResult> => {
     logger.debug(`sqlExecSingleRow() sql: ${sql} | data: ${data}`);
-    let result : QueryResult;
+    let result: QueryResult;
     try {
         result = await client.query(sql, data);
-        logger.debug(`sqlExecSingleRow(): ${result.command} | ${result.rowCount}`);
-        return result
+        logger.debug(
+            `sqlExecSingleRow(): ${result.command} | ${result.rowCount}`
+        );
+        return result;
     } catch (error) {
-        logger.error(`sqlExecSingleRow() error: ${error.message} | sql: ${sql} | data: ${data}`);
+        logger.error(
+            `sqlExecSingleRow() error: ${error.message} | sql: ${sql} | data: ${data}`
+        );
         throw new Error(error.message);
     }
-}
+};
 
 /*
  * Execute a sql statement with multiple rows of parameter data.
@@ -77,11 +88,15 @@ export const sqlExecSingleRow = async (client:Client, sql:string, data:string[][
  * @param data: the data to be stored
  * @return result
  */
-export const sqlExecMultipleRows = async (client:Client, sql:string, data:string[][]) => {
+export const sqlExecMultipleRows = async (
+    client: PoolClient,
+    sql: string,
+    data: string[][]
+): Promise<void> => {
     logger.debug(`inside sqlExecMultipleRows()`);
     logger.debug(`sqlExecMultipleRows() data: ${data}`);
     if (data.length !== 0) {
-        for(let item of data) {
+        for (const item of data) {
             try {
                 logger.debug(`sqlExecMultipleRows() item: ${item}`);
                 logger.debug(`sqlExecMultipleRows() sql: ${sql}`);
@@ -95,12 +110,12 @@ export const sqlExecMultipleRows = async (client:Client, sql:string, data:string
         logger.error(`sqlExecMultipleRows(): No data available`);
         throw new Error('sqlExecMultipleRows(): No data available');
     }
-}
+};
 
 /*
  * Rollback transaction
  */
-export const rollback = async (client:Client) => {
+export const rollback = async (client: PoolClient): Promise<void> => {
     if (typeof client !== 'undefined' && client) {
         try {
             logger.info(`sql transaction rollback`);
@@ -113,12 +128,12 @@ export const rollback = async (client:Client) => {
     } else {
         logger.warn(`rollback() not excuted. client is not set`);
     }
-}
+};
 
 /*
  * Commit transaction
  */
-export const commit = async (client:Client) => {
+export const commit = async (client: PoolClient): Promise<void> => {
     logger.debug(`sql transaction committed`);
     try {
         await client.query('COMMIT');
@@ -127,4 +142,4 @@ export const commit = async (client:Client) => {
     } finally {
         client.release();
     }
-}
+};

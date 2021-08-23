@@ -1,7 +1,7 @@
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 //DO NOT COMMIT YOUR .env FILE
-dotenv.config({ path:'.env.example'});
-const config = {
+dotenv.config({ path: '.env' });
+export const config = {
     serviceName: process.env.SERVICENAME || 'node typescript postgres app',
     port: Number(process.env.PORT) || 3000,
     loggerLevel: 'debug',
@@ -12,8 +12,6 @@ const config = {
         host: process.env.DB_HOST || '',
         port: Number(process.env.DB_PORT) || 5432,
         max: Number(process.env.DB_MAX_CLIENTS) || 20,
-        idleTimeoutMillis: Number(process.env.DB_IDLE_TIMEOUT_MS) || 30000
-    }
-}
-
-export = config;
+        idleTimeoutMillis: Number(process.env.DB_IDLE_TIMEOUT_MS) || 30000,
+    },
+};

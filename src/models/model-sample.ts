@@ -1,34 +1,35 @@
-import {Client, QueryResult} from 'pg';
+import { PoolClient, QueryResult } from 'pg';
 import * as dbUtil from './../utils/dbUtil';
-import logger = require('./../utils/logger');
-const transactionSuccess : string = 'transaction success';
+import { logger } from './../utils/logger';
+const transactionSuccess = 'transaction success';
 
-/* 
+/*
  * sample query
  * @return server time
  */
-export const getTimeModel = async () => {
-    let sql = "SELECT NOW();";
-    let data : string[][] = [];
-    let result : QueryResult;
+export const getTimeModel = async (): Promise<QueryResult> => {
+    const sql = 'SELECT NOW();';
+    const data: string[][] = [];
+    let result: QueryResult;
     try {
         result = await dbUtil.sqlToDB(sql, data);
         return result;
     } catch (error) {
         throw new Error(error.message);
     }
-}
+};
 
-/* 
+/*
  * sample query using transactions
  * @return transaction success
  */
-export const sampleTransactionModel = async () => {
-    let singleSql = "DELETE FROM TEST";
-    let multiSql = "INSERT INTO TEST (testcolumn) VALUES ($1)";
-    let singleData : string[][] = [];
-    let multiData : string[][] = [['typescript'], ['is'], ['fun']];
-    let client: Client = await dbUtil.getTransaction();
+export const sampleTransactionModel = async (): Promise<string> => {
+    const singleSql = 'DELETE FROM TEST';
+    const multiSql = 'INSERT INTO TEST (testcolumn) VALUES ($1)';
+    const singleData: string[][] = [];
+    const multiData: string[][] = [['typescript'], ['is'], ['fun']];
+    const client: PoolClient = await dbUtil.getTransaction();
+    //const client = await pool.connect()
     try {
         await dbUtil.sqlExecSingleRow(client, singleSql, singleData);
         await dbUtil.sqlExecMultipleRows(client, multiSql, multiData);
@@ -39,4 +40,4 @@ export const sampleTransactionModel = async () => {
         logger.error(`sampleTransactionModel error: ${error.message}`);
         throw new Error(error.message);
     }
-}
+};
