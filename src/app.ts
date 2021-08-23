@@ -2,10 +2,11 @@ import { config } from './config';
 import express from 'express';
 import cluster from 'cluster';
 import { logger } from './utils/logger';
-//import controllers
-import * as healthcheckController from './controllers/controller-healthcheck';
-import * as sampleController from './controllers/controller-sample';
 import { cpus } from 'os';
+//import controllers
+import { healthcheck } from './controllers/controller-healthcheck';
+import { getTime, sampleTransaction } from './controllers/controller-sample';
+
 const numCPUs = cpus().length;
 
 if (cluster.isPrimary) {
@@ -32,11 +33,11 @@ if (cluster.isPrimary) {
     app.use(router); // tell the app this is the router we are using
 
     //healthcheck routes
-    router.get('/', healthcheckController.healthcheck);
-    router.get('/healthcheck', healthcheckController.healthcheck);
+    router.get('/', healthcheck);
+    router.get('/healthcheck', healthcheck);
     // sampleController routes
-    router.get('/servertime', sampleController.getTime);
-    router.get('/transaction', sampleController.sampleTransaction);
+    router.get('/servertime', getTime);
+    router.get('/transaction', sampleTransaction);
 
     app.listen(config.port, function () {
         const workerId =

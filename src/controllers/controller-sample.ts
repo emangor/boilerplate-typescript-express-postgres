@@ -1,13 +1,18 @@
 import { Request, Response } from 'express';
 import { logger } from './../utils/logger';
-import * as sampleModel from './../models/model-sample';
+import { getTimeModel, sampleTransactionModel } from './../models/model-sample';
 import { QueryResult } from 'pg';
 
-// sample controller
+/**
+ * sample controller
+ * @param { Request } req
+ * @param { Response } res
+ * @returns { Promise<void> }
+ */
 export const getTime = async (req: Request, res: Response): Promise<void> => {
     let result: QueryResult;
     try {
-        result = await sampleModel.getTimeModel();
+        result = await getTimeModel();
         res.status(200).json(result.rows);
     } catch (error) {
         logger.error(`getTime error: ${error.message}`);
@@ -19,14 +24,19 @@ export const getTime = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-// sample controller using transaction
+/**
+ * sample controller using transaction
+ * @param { Request } req
+ * @param { Response } res
+ * @returns { Promise<void> }
+ */
 export const sampleTransaction = async (
     req: Request,
     res: Response
 ): Promise<void> => {
     let result: string;
     try {
-        result = await sampleModel.sampleTransactionModel();
+        result = await sampleTransactionModel();
         res.status(200).json({
             status: 'ok',
             message: result,

@@ -1,7 +1,8 @@
 import { Pool, PoolClient, QueryResult } from 'pg';
 import { config } from './../config';
-import { logger } from './../utils./../utils/logger';
+import { logger } from './../utils/logger';
 
+// TODO INTERFACE
 const pgconfig = {
     user: config.db.user,
     database: config.db.database,
@@ -20,11 +21,11 @@ pool.on('error', function (err: Error) {
     logger.error(`idle client error, ${err.message} | ${err.stack}`);
 });
 
-/*
+/**
  * Single Query to Postgres
- * @param sql: the query for store data
- * @param data: the data to be stored
- * @return result
+ * @param { string } sql the query for store data
+ * @param { string[][] } data the data to be stored
+ * @returns { Promise<QueryResult> }
  */
 export const sqlToDB = async (
     sql: string,
@@ -40,9 +41,10 @@ export const sqlToDB = async (
     }
 };
 
-/*
+/**
  * Retrieve a SQL client with transaction from connection pool. If the client is valid, either
  * COMMMIT or ROALLBACK needs to be called at the end before releasing the connection back to pool.
+ * @returns { Promise<PoolClient> }
  */
 export const getTransaction = async (): Promise<PoolClient> => {
     logger.debug(`getTransaction()`);
@@ -55,11 +57,11 @@ export const getTransaction = async (): Promise<PoolClient> => {
     }
 };
 
-/*
+/**
  * Execute a sql statment with a single row of data
- * @param sql: the query for store data
- * @param data: the data to be stored
- * @return result
+ * @param { string } sql the query for store data
+ * @param { string[][] } data the data to be stored
+ * @returns { Promise<QueryResult> }
  */
 export const sqlExecSingleRow = async (
     client: PoolClient,
@@ -82,11 +84,11 @@ export const sqlExecSingleRow = async (
     }
 };
 
-/*
+/**
  * Execute a sql statement with multiple rows of parameter data.
- * @param sql: the query for store data
- * @param data: the data to be stored
- * @return result
+ * @param { string } sql the query for store data
+ * @param { string[][] } data the data to be stored
+ * @returns { Promise<QueryResult> }
  */
 export const sqlExecMultipleRows = async (
     client: PoolClient,
@@ -112,8 +114,10 @@ export const sqlExecMultipleRows = async (
     }
 };
 
-/*
+/**
  * Rollback transaction
+ * @param { PoolClient } client
+ * @returns { Promise<void> }
  */
 export const rollback = async (client: PoolClient): Promise<void> => {
     if (typeof client !== 'undefined' && client) {
@@ -130,8 +134,10 @@ export const rollback = async (client: PoolClient): Promise<void> => {
     }
 };
 
-/*
+/**
  * Commit transaction
+ * @param { PoolClient } client
+ * @returns { Promise<void> }
  */
 export const commit = async (client: PoolClient): Promise<void> => {
     logger.debug(`sql transaction committed`);

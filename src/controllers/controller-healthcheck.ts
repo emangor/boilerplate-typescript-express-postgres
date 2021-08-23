@@ -1,5 +1,11 @@
 import { Request, Response } from 'express';
 
+/**
+ * healthcheck for server
+ * @param { Request } req
+ * @param { Response } res
+ * @returns { void }
+ */
 export const healthcheck = (req: Request, res: Response): void => {
     res.json({
         status: 'ok',

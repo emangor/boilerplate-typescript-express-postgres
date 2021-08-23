@@ -8,7 +8,7 @@ const transactionSuccess = 'transaction success';
  * @return server time
  */
 export const getTimeModel = async (): Promise<QueryResult> => {
-    const sql = 'SELECT NOW();';
+    const sql = 'SELECT NOW() as now;';
     const data: string[][] = [];
     let result: QueryResult;
     try {
@@ -24,8 +24,9 @@ export const getTimeModel = async (): Promise<QueryResult> => {
  * @return transaction success
  */
 export const sampleTransactionModel = async (): Promise<string> => {
-    const singleSql = 'DELETE FROM TEST';
-    const multiSql = 'INSERT INTO TEST (testcolumn) VALUES ($1)';
+    const singleSql = 'DELETE FROM TEST;';
+    // use parametized queries to prevent SQL injection attacks
+    const multiSql = 'INSERT INTO TEST (testcolumn) VALUES ($1);';
     const singleData: string[][] = [];
     const multiData: string[][] = [['typescript'], ['is'], ['fun']];
     const client: PoolClient = await dbUtil.getTransaction();
