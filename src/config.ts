@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
 //DO NOT COMMIT YOUR .env FILE
 dotenv.config({ path: '.env' });
+import { Config } from './types';
 
-// TODO INTERFACE
-export const config = {
+export const config: Config = {
     serviceName: process.env.SERVICENAME || 'node typescript postgres app',
     port: Number(process.env.PORT) || 3000,
     loggerLevel: 'debug',

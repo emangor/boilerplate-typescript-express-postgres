@@ -10,8 +10,11 @@ https://www.npmjs.com/package/typescript
 
 ## Create table in your Postgres DB:
 
-create table test
-(testcolumn varchar(20));
+```
+CREATE TABLE test (
+  testcolumn VARCHAR(20)
+);
+```
 
 ## Download this repo
 
@@ -23,23 +26,23 @@ download and run `npm install`
 
 this can also be done by creating a `.env` file in the root of this project see `.env.example` for a reference
 
-## Transpile TypeScript to the build folder
+## Quickstart: transpile, lint and start the app all at once
+
+`npm start`
+
+### Or each step individually:
+
+1. Transpile TypeScript to the build folder
 
 run `tsc`
 
-you can adjust transpiling settings in tsconfig.json
-
-## Run ESLint
+1. Run ESLint
 
 `npm run lint`
 
-## Run your built node app
+1. Run your built node app
 
 `node build/app.js`
-
-## Or transpile, lint and start the app all at once
-
-`npm start`
 
 ## Routes
 
@@ -48,3 +51,11 @@ http://localhost:3000/healthcheck and root return healthcheck
 http://localhost:3000/servertime - returns servertime
 
 http://localhost:3000/transaction - deletes then inserts into your DB using a transaction
+
+## node-postgres package
+
+-   documentation [here](https://node-postgres.com/)
+
+-   use [parameterized queries](https://github.com/brianc/node-postgres/wiki/FAQ#8-does-node-postgres-handle-sql-injection) to prevent SQL injection
+
+-   if you want to do more with [data types](https://node-postgres.com/features/types)

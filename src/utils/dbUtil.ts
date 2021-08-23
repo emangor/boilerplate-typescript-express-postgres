@@ -1,9 +1,9 @@
 import { Pool, PoolClient, QueryResult } from 'pg';
 import { config } from './../config';
 import { logger } from './../utils/logger';
+import { PgConfig } from '../types';
 
-// TODO INTERFACE
-const pgconfig = {
+const pgconfig: PgConfig = {
     user: config.db.user,
     database: config.db.database,
     password: config.db.password,
@@ -69,9 +69,8 @@ export const sqlExecSingleRow = async (
     data: string[][]
 ): Promise<QueryResult> => {
     logger.debug(`sqlExecSingleRow() sql: ${sql} | data: ${data}`);
-    let result: QueryResult;
     try {
-        result = await client.query(sql, data);
+        const result: QueryResult = await client.query(sql, data);
         logger.debug(
             `sqlExecSingleRow(): ${result.command} | ${result.rowCount}`
         );
