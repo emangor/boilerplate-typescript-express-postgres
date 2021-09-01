@@ -13,7 +13,11 @@ export const getTime = async (req: Request, res: Response): Promise<void> => {
     let result: QueryResult;
     try {
         result = await getTimeModel();
-        res.status(200).json(result.rows);
+        res.status(200).json({
+            status: 'ok',
+            message: result.rows,
+            statusCode: 200,
+        });
     } catch (error) {
         logger.error(`getTime error: ${error.message}`);
         res.status(500).json({

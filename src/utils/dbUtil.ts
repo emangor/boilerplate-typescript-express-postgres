@@ -24,14 +24,14 @@ pool.on('error', function (err: Error) {
 /**
  * Single Query to Postgres
  * @param { string } sql the query for store data
- * @param { string[][] } data the data to be stored
+ * @param { string[][] | undefined } data the data to be stored
  * @returns { Promise<QueryResult> }
  */
 export const sqlToDB = async (
     sql: string,
-    data: string[][]
+    data: string[][] | undefined = undefined
 ): Promise<QueryResult> => {
-    logger.debug(`sqlToDB() sql: ${sql} | data: ${data}`);
+    logger.debug(`sqlExecSingleRow() sql: ${sql} | data: ${data}`);
     let result: QueryResult;
     try {
         result = await pool.query(sql, data);
@@ -60,13 +60,13 @@ export const getTransaction = async (): Promise<PoolClient> => {
 /**
  * Execute a sql statment with a single row of data
  * @param { string } sql the query for store data
- * @param { string[][] } data the data to be stored
+ * @param { string[][] | undefined } data the data to be stored
  * @returns { Promise<QueryResult> }
  */
 export const sqlExecSingleRow = async (
     client: PoolClient,
     sql: string,
-    data: string[][]
+    data: string[][] | undefined = undefined
 ): Promise<QueryResult> => {
     logger.debug(`sqlExecSingleRow() sql: ${sql} | data: ${data}`);
     try {

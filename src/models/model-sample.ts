@@ -1,5 +1,12 @@
 import { PoolClient, QueryResult } from 'pg';
-import * as dbUtil from './../utils/dbUtil';
+import {
+    commit,
+    getTransaction,
+    rollback,
+    sqlExecMultipleRows,
+    sqlExecSingleRow,
+    sqlToDB,
+} from './../utils/dbUtil';
 import { logger } from './../utils/logger';
 const transactionSuccess = 'transaction success';
 
@@ -9,9 +16,8 @@ const transactionSuccess = 'transaction success';
  */
 export const getTimeModel = async (): Promise<QueryResult> => {
     const sql = 'SELECT NOW() as now;';
-    const data: string[][] = [];
     try {
-        return await dbUtil.sqlToDB(sql, data);
+        return await sqlToDB(sql);
     } catch (error) {
         throw new Error(error.message);
     }
@@ -23,17 +29,17 @@ export const getTimeModel = async (): Promise<QueryResult> => {
  */
 export const sampleTransactionModel = async (): Promise<string> => {
     const singleSql = 'DELETE FROM TEST;';
+    const singleData = undefined;
     const multiSql = 'INSERT INTO TEST (testcolumn) VALUES ($1);';
-    const singleData: string[][] = [];
     const multiData: string[][] = [['typescript'], ['is'], ['fun']];
-    const client: PoolClient = await dbUtil.getTransaction();
+    const client: PoolClient = await getTransaction();
     try {
-        await dbUtil.sqlExecSingleRow(client, singleSql, singleData);
-        await dbUtil.sqlExecMultipleRows(client, multiSql, multiData);
-        await dbUtil.commit(client);
+        await sqlExecSingleRow(client, singleSql, singleData);
+        await sqlExecMultipleRows(client, multiSql, multiData);
+        await commit(client);
         return transactionSuccess;
     } catch (error) {
-        await dbUtil.rollback(client);
+        await rollback(client);
         logger.error(`sampleTransactionModel error: ${error.message}`);
         throw new Error(error.message);
     }

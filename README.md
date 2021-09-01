@@ -52,6 +52,12 @@ http://localhost:3000/servertime - returns servertime
 
 http://localhost:3000/transaction - deletes then inserts into your DB using a transaction
 
+## Testing
+
+- basic unit test examples have been added using [Jest](https://jestjs.io/docs/getting-started)
+
+`npm test`
+
 ## node-postgres package
 
 -   documentation [here](https://node-postgres.com/)
